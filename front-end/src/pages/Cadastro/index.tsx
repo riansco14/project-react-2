@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Background, Container, Content } from './styles'
 import logoImg from '../../assets/logo.svg'
 import { FiArrowLeft, FiLock, FiLogIn, FiMail, FiUser } from 'react-icons/fi'
@@ -6,11 +6,25 @@ import Input from '../../components/Input'
 import Button from '../../components/Button'
 import { Link } from 'react-router-dom'
 import { Form } from '@unform/web'
+import * as Yup from 'yup'
 
 const Cadastro: React.FC = () => {
-	function handleSubmit(data: any): void {
-		console.log(data)
-	}
+	const handleSubmit = useCallback(async (data: any) => {
+		try {
+			const schema = Yup.object().shape({
+				name: Yup.string().required('Nome obrigatório'),
+				email: Yup.string()
+					.required('Email obrigatório')
+					.email('Digite um Email válido'),
+				password: Yup.string().min(6, 'No minimo 6 digitos'),
+			})
+
+			await schema.validate(data, { abortEarly: false })
+		} catch (error) {
+			console.log(error)
+		}
+	}, [])
+
 	return (
 		<Container>
 			<Background />
