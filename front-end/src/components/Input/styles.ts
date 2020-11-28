@@ -1,6 +1,11 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
-const Container = styled.div`
+interface ContainerProps {
+	isFocused: boolean
+	isPreenchido: boolean
+}
+
+const Container = styled.div<ContainerProps>`
 	background: #232129;
 	border-radius: 10px;
 	border: 2px solid #232129;
@@ -10,6 +15,21 @@ const Container = styled.div`
 
 	display: flex;
 	align-items: center;
+
+	${(props) => {
+		if (props.isFocused)
+			return css`
+				border-color: #ff9000;
+				color: #ff9000;
+			`
+	}}
+
+	${(props) => {
+		if (props.isPreenchido)
+			return css`
+				color: #ff9000;
+			`
+	}}
 
 	& + div {
 		margin-top: 8px;
