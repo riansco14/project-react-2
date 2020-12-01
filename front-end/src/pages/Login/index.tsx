@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react'
+import React, { useCallback, useContext, useRef } from 'react'
 import { Background, Container, Content } from './styles'
 import logoImg from '../../assets/logo.svg'
 import { FiLock, FiLogIn, FiMail } from 'react-icons/fi'
@@ -9,10 +9,18 @@ import { Form } from '@unform/web'
 import * as Yup from 'yup'
 import { FormHandles } from '@unform/core'
 import getValidationErrors from '../../utils/getValidationErrors'
+import { SessionContext } from '../../context/SessionContext'
+
+interface LoginData {
+	email: string
+	password: string
+}
 
 const Login: React.FC = () => {
 	const formRef = useRef<FormHandles>(null)
-	const handleSubmit = useCallback(async (data: any) => {
+	const { login } = useContext(SessionContext)
+
+	const handleSubmit = useCallback(async (data: LoginData) => {
 		try {
 			formRef.current?.setErrors({})
 			const schema = Yup.object().shape({
@@ -23,6 +31,8 @@ const Login: React.FC = () => {
 			})
 
 			await schema.validate(data, { abortEarly: false })
+
+			login({ email: data.email, password: data.password })
 		} catch (error) {
 			const errors = getValidationErrors(error)
 			formRef.current?.setErrors(errors)
