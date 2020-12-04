@@ -4,6 +4,8 @@ import GlobalStyle from './styles/global'
 import { BrowserRouter, Route, Router, Switch } from 'react-router-dom'
 import Cadastro from './pages/Cadastro'
 import { SessionProvider } from './context/SessionContext'
+import Toast from './components/Toast'
+import AppProvider from './context'
 
 const App: React.FC = () => {
 	return (
@@ -11,9 +13,9 @@ const App: React.FC = () => {
 			<BrowserRouter>
 				<Switch>
 					<Route path="/login">
-						<SessionProvider>
+						<AppProvider>
 							<Login />
-						</SessionProvider>
+						</AppProvider>
 					</Route>
 					<Route path="/cadastro">
 						<Cadastro />

@@ -9,7 +9,8 @@ import { Form } from '@unform/web'
 import * as Yup from 'yup'
 import { FormHandles } from '@unform/core'
 import getValidationErrors from '../../utils/getValidationErrors'
-import { SessionContext } from '../../context/SessionContext'
+import { useSession } from '../../context/SessionContext'
+import { useToast } from '../../context/ToastContext'
 
 interface LoginData {
 	email: string
@@ -18,26 +19,35 @@ interface LoginData {
 
 const Login: React.FC = () => {
 	const formRef = useRef<FormHandles>(null)
-	const { login } = useContext(SessionContext)
+	const { login } = useSession()
+	const { addToast } = useToast()
 
-	const handleSubmit = useCallback(async (data: LoginData) => {
-		try {
-			formRef.current?.setErrors({})
-			const schema = Yup.object().shape({
-				email: Yup.string()
-					.required('Email obrigatório')
-					.email('Digite um Email válido'),
-				password: Yup.string().required('Senha obrigatória'),
-			})
+	const handleSubmit = useCallback(
+		async (data: LoginData) => {
+			try {
+				formRef.current?.setErrors({})
+				const schema = Yup.object().shape({
+					email: Yup.string()
+						.required('Email obrigatório')
+						.email('Digite um Email válido'),
+					password: Yup.string().required('Senha obrigatória'),
+				})
 
-			await schema.validate(data, { abortEarly: false })
+				await schema.validate(data, { abortEarly: false })
 
-			login({ email: data.email, password: data.password })
-		} catch (error) {
-			const errors = getValidationErrors(error)
-			formRef.current?.setErrors(errors)
-		}
-	}, [])
+				login({ email: data.email, password: data.password })
+			} catch (error) {
+				const errors = getValidationErrors(error)
+				formRef.current?.setErrors(errors)
+				addToast({
+					title: 'Aconteceu algum erro',
+					descricao: 'Campos',
+					type: 'error',
+				})
+			}
+		},
+		[login, addToast]
+	)
 
 	return (
 		<Container>

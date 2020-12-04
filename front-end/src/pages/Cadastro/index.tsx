@@ -10,8 +10,10 @@ import { FormHandles } from '@unform/core'
 import * as Yup from 'yup'
 import getValidationErrors from '../../utils/getValidationErrors'
 
+import { useToast } from '../../context/ToastContext'
 const Cadastro: React.FC = () => {
 	const formRef = useRef<FormHandles>(null)
+	const { addToast } = useToast()
 	console.log(formRef)
 
 	const handleSubmit = useCallback(async (data: any) => {
